@@ -878,6 +878,17 @@ export const MOCK_ADMIN_STATS = {
   },
 }
 
+export const MOCK_OFFICER_STATS = {
+  totalMembers: 156,
+  pendingRequests: 5,
+  upcomingEvents: 3,
+  totalPosts: 24,
+  memberGrowth: 12,
+  eventAttendance: 87,
+  engagementRate: 72,
+  activeDiscussions: 8,
+}
+
 export const MOCK_PENDING_APPROVALS = [
   {
     id: "approval-1",
