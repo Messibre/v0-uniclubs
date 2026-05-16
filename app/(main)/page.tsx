@@ -2,10 +2,10 @@
 
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Sparkles, Calendar, Users, Trophy, ShieldCheck, ArrowRight } from "lucide-react"
+import { Sparkles, Calendar, Users, Trophy, ShieldCheck, ArrowRight, Zap, User, Building, Shield } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { useAuthStore } from "@/lib/store"
+import { useAuthStore, useDemoStore } from "@/lib/store"
 import { useEffect } from "react"
 
 const features = [
@@ -40,13 +40,24 @@ const stats = [
 
 export default function HomePage() {
   const { isAuthenticated } = useAuthStore()
+  const { isDemoMode, switchRole } = useDemoStore()
   const router = useRouter()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isDemoMode) {
       router.push("/dashboard")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isDemoMode, router])
+
+  const handleQuickDemo = (role: 'student' | 'officer' | 'admin') => {
+    switchRole(role)
+    const paths = {
+      student: '/dashboard',
+      officer: '/officer/dashboard',
+      admin: '/admin'
+    }
+    router.push(paths[role])
+  }
 
   return (
     <div className="space-y-16 pt-8">
@@ -78,6 +89,44 @@ export default function HomePage() {
               Already have an account?{" "}
               <span className="text-primary hover:underline">Sign in</span>
             </Link>
+          </div>
+
+          {/* Quick Demo Buttons */}
+          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 sm:p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Zap className="w-5 h-5 text-amber-500" />
+              <span className="font-bold text-foreground">Try the Demo</span>
+              <span className="text-xs text-muted-foreground ml-auto">No signup required</span>
+            </div>
+            <p className="text-sm text-muted-foreground mb-4">
+              Explore UniClubs as different user roles to see the full platform in action.
+            </p>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+              <Button
+                variant="outline"
+                onClick={() => handleQuickDemo('student')}
+                className="gap-2 border-blue-500/30 bg-blue-500/5 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400"
+              >
+                <User className="w-4 h-4" />
+                Student
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleQuickDemo('officer')}
+                className="gap-2 border-amber-500/30 bg-amber-500/5 hover:bg-amber-500/10 text-amber-600 dark:text-amber-400"
+              >
+                <Building className="w-4 h-4" />
+                Officer
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => handleQuickDemo('admin')}
+                className="gap-2 border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-purple-600 dark:text-purple-400"
+              >
+                <Shield className="w-4 h-4" />
+                Admin
+              </Button>
+            </div>
           </div>
 
           {/* Stats */}
