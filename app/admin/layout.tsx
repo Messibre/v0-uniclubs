@@ -1,13 +1,15 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Shield, Building, Calendar, Users, BarChart3, Bell, Settings, ArrowLeft } from "lucide-react"
+import { Shield, Building, Calendar, Users, BarChart3, Bell, Settings, ArrowLeft, LogOut, Menu, X } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore, useDemoStore } from "@/lib/store"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
 const sidebarLinks = [
   { href: "/admin", label: "Overview", icon: BarChart3 },
@@ -15,18 +17,27 @@ const sidebarLinks = [
   { href: "/admin/events", label: "Events", icon: Calendar },
   { href: "/admin/users", label: "Users", icon: Users },
   { href: "/admin/reports", label: "Reports", icon: Bell },
+  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
   { href: "/admin/settings", label: "Settings", icon: Settings },
 ]
 
-export function AdminSidebar() {
+function SidebarContent({ onLinkClick }: { onLinkClick?: () => void }) {
   const pathname = usePathname()
-  const { user } = useAuthStore()
+  const router = useRouter()
+  const { user, logout } = useAuthStore()
+  const { setDemoMode } = useDemoStore()
+
+  const handleLogout = () => {
+    logout()
+    setDemoMode(false)
+    router.push("/")
+  }
 
   return (
-    <aside className="w-64 border-r border-border bg-card min-h-screen p-4 flex flex-col">
+    <div className="flex flex-col h-full p-4">
       {/* Logo */}
       <div className="mb-6">
-        <Link href="/admin" className="flex items-center gap-2 group">
+        <Link href="/admin" className="flex items-center gap-2 group" onClick={onLinkClick}>
           <div className="w-9 h-9 rounded-md bg-purple-600 flex items-center justify-center text-white font-bold text-lg">
             <Shield className="w-5 h-5" />
           </div>
@@ -59,6 +70,7 @@ export function AdminSidebar() {
             <Link
               key={link.href}
               href={link.href}
+              onClick={onLinkClick}
               className={cn(
                 "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all",
                 isActive
@@ -73,17 +85,62 @@ export function AdminSidebar() {
         })}
       </nav>
 
-      {/* Back to App */}
-      <div className="pt-4 border-t border-border">
+      {/* Bottom Actions */}
+      <div className="pt-4 border-t border-border space-y-2">
         <Link
           href="/"
-          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+          onClick={onLinkClick}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to Main Site
         </Link>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 px-3 py-2 text-sm text-destructive hover:bg-destructive/10 transition-colors rounded-lg w-full"
+        >
+          <LogOut className="w-4 h-4" />
+          Logout
+        </button>
       </div>
+    </div>
+  )
+}
+
+export function AdminSidebar() {
+  return (
+    <aside className="hidden lg:block w-64 border-r border-border bg-card min-h-screen">
+      <SidebarContent />
     </aside>
+  )
+}
+
+function MobileHeader() {
+  const [open, setOpen] = useState(false)
+  
+  return (
+    <header className="lg:hidden sticky top-0 z-50 w-full bg-card/80 backdrop-blur-md border-b border-border">
+      <div className="flex items-center justify-between px-4 h-14">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-md bg-purple-600 flex items-center justify-center text-white font-bold">
+            <Shield className="w-4 h-4" />
+          </div>
+          <span className="font-bold">Admin</span>
+        </div>
+        
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button variant="ghost" size="icon">
+              <Menu className="w-5 h-5" />
+              <span className="sr-only">Open menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left" className="w-72 p-0">
+            <SidebarContent onLinkClick={() => setOpen(false)} />
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
   )
 }
 
@@ -112,9 +169,10 @@ export default function AdminLayout({
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
+      <MobileHeader />
       <div className="flex flex-1">
         <AdminSidebar />
-        <main className="flex-1 p-8 overflow-auto">
+        <main className="flex-1 p-4 lg:p-8 overflow-auto">
           {children}
         </main>
       </div>
