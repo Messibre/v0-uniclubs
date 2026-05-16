@@ -3,26 +3,41 @@
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
-import { LogIn, AlertCircle } from "lucide-react"
-import { useAuthStore } from "@/lib/store"
+import { LogIn, AlertCircle, User, Building, Shield, Zap } from "lucide-react"
+import { useAuthStore, useDemoStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { DEMO_USERS } from "@/lib/mock-data"
+
+const ROLE_PATHS = {
+  student: "/dashboard",
+  officer: "/officer/dashboard",
+  admin: "/admin",
+}
+
+const DEMO_CREDENTIALS = {
+  student: { email: "abebe.kebede@aau.edu.et", password: "Student123", name: "Abebe Kebede" },
+  officer: { email: "senait.negash@aau.edu.et", password: "Officer123", name: "Senait Negash" },
+  admin: { email: "admin@aau.edu.et", password: "Admin@1234", name: "Yonas Tadesse" },
+}
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false)
+  const [selectedRole, setSelectedRole] = useState<'student' | 'officer' | 'admin' | null>(null)
 
   const router = useRouter()
   const { login, isAuthenticated, isLoading, error, clearError } = useAuthStore()
+  const { switchRole, isDemoMode } = useDemoStore()
 
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && !isDemoMode) {
       router.push("/dashboard")
     }
-  }, [isAuthenticated, router])
+  }, [isAuthenticated, isDemoMode, router])
 
   useEffect(() => {
     clearError()
@@ -30,20 +45,33 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Determine role from email
+    let role: 'student' | 'officer' | 'admin' = 'student'
+    if (email.includes("admin")) {
+      role = 'admin'
+    } else if (email.includes("senait") || email.includes("officer")) {
+      role = 'officer'
+    }
+    
     const success = await login(email, password)
     if (success) {
-      router.push("/dashboard")
+      // Switch to the appropriate role in demo mode
+      switchRole(role)
+      router.push(ROLE_PATHS[role])
     }
   }
 
-  const setDemoCredentials = (type: "student" | "officer" | "admin") => {
-    if (type === "admin") {
-      setEmail("admin@aau.edu.et")
-      setPassword("Admin@1234")
-    } else {
-      setEmail("abebe@aau.edu.et")
-      setPassword("Abebe123")
-    }
+  const handleQuickDemo = (role: 'student' | 'officer' | 'admin') => {
+    setSelectedRole(role)
+    const creds = DEMO_CREDENTIALS[role]
+    setEmail(creds.email)
+    setPassword(creds.password)
+  }
+
+  const handleInstantDemo = (role: 'student' | 'officer' | 'admin') => {
+    switchRole(role)
+    router.push(ROLE_PATHS[role])
   }
 
   return (
@@ -67,7 +95,7 @@ export default function LoginPage() {
       <Card className="w-full max-w-md z-10 animate-slide-up border-border/50 bg-card/80 backdrop-blur-xl">
         <CardHeader className="space-y-2 pb-6 text-center">
           <CardTitle className="text-2xl font-bold tracking-tight">Welcome back</CardTitle>
-          <CardDescription>Enter your credentials to access your account</CardDescription>
+          <CardDescription>Enter your credentials or try a demo account</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -155,38 +183,63 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          {/* Quick Demo Logins */}
-          <div className="mt-6 pt-6 border-t border-border space-y-3">
-            <p className="text-xs text-muted-foreground text-center font-medium uppercase tracking-wider">
-              Quick Demo Login
-            </p>
-            <div className="text-xs text-muted-foreground text-center space-y-1">
-              <p>Admin: admin@aau.edu.et / Admin@1234</p>
-              <p>Student: abebe@aau.edu.et / Abebe123</p>
+          {/* Quick Demo Section */}
+          <div className="mt-6 pt-6 border-t border-border space-y-4">
+            <div className="flex items-center justify-center gap-2">
+              <Zap className="w-4 h-4 text-amber-500" />
+              <p className="text-sm font-medium text-foreground">Try Demo Mode</p>
             </div>
+            
+            <p className="text-xs text-muted-foreground text-center">
+              Explore UniClubs as different user roles without signing up
+            </p>
+            
+            {/* Instant Demo Buttons */}
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
-                onClick={() => setDemoCredentials("student")}
-                className="px-3 py-2 text-xs font-medium rounded-md bg-muted text-muted-foreground hover:text-foreground hover:bg-primary/10 border border-border hover:border-primary/40 transition-all"
+                onClick={() => handleInstantDemo("student")}
+                className={`flex flex-col items-center gap-2 p-3 text-xs font-medium rounded-lg border transition-all ${
+                  selectedRole === "student"
+                    ? "bg-blue-500/10 border-blue-500/50 text-blue-600 dark:text-blue-400"
+                    : "bg-muted/50 border-border text-muted-foreground hover:border-blue-500/30 hover:bg-blue-500/5"
+                }`}
               >
-                Student
+                <User className="w-5 h-5" />
+                <span>Student</span>
+                <span className="text-[10px] opacity-70">Abebe K.</span>
               </button>
               <button
                 type="button"
-                onClick={() => setDemoCredentials("officer")}
-                className="px-3 py-2 text-xs font-medium rounded-md bg-muted text-muted-foreground hover:text-foreground hover:bg-secondary/10 border border-border hover:border-secondary/40 transition-all"
+                onClick={() => handleInstantDemo("officer")}
+                className={`flex flex-col items-center gap-2 p-3 text-xs font-medium rounded-lg border transition-all ${
+                  selectedRole === "officer"
+                    ? "bg-amber-500/10 border-amber-500/50 text-amber-600 dark:text-amber-400"
+                    : "bg-muted/50 border-border text-muted-foreground hover:border-amber-500/30 hover:bg-amber-500/5"
+                }`}
               >
-                Officer
+                <Building className="w-5 h-5" />
+                <span>Officer</span>
+                <span className="text-[10px] opacity-70">Senait N.</span>
               </button>
               <button
                 type="button"
-                onClick={() => setDemoCredentials("admin")}
-                className="px-3 py-2 text-xs font-medium rounded-md bg-primary/10 text-primary hover:bg-primary/20 border border-primary/30 hover:border-primary/50 transition-all"
+                onClick={() => handleInstantDemo("admin")}
+                className={`flex flex-col items-center gap-2 p-3 text-xs font-medium rounded-lg border transition-all ${
+                  selectedRole === "admin"
+                    ? "bg-purple-500/10 border-purple-500/50 text-purple-600 dark:text-purple-400"
+                    : "bg-muted/50 border-border text-muted-foreground hover:border-purple-500/30 hover:bg-purple-500/5"
+                }`}
               >
-                Admin
+                <Shield className="w-5 h-5" />
+                <span>Admin</span>
+                <span className="text-[10px] opacity-70">Yonas T.</span>
               </button>
             </div>
+            
+            <p className="text-[10px] text-muted-foreground text-center">
+              Click any role above to instantly explore that dashboard
+            </p>
           </div>
         </CardContent>
       </Card>
