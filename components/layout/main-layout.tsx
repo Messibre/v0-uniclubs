@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { Search, Menu, User, LogOut, Settings, Sun, Moon, Shield, Building, Bell, X, Zap } from "lucide-react"
 import { useTheme } from "next-themes"
@@ -45,8 +46,15 @@ export function MainNav() {
             {/* Left: Logo & Search */}
             <div className="flex items-center gap-6 flex-1">
               <Link href="/" className="flex items-center gap-2 group">
-                <div className="w-8 h-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold text-xl group-hover:shadow-glow transition-all">
-                  U
+                <div className="w-8 h-8 rounded-md overflow-hidden shadow-md group-hover:shadow-glow transition-all">
+                  <Image
+                    src="/logo.jpg"
+                    alt="UniClubs"
+                    width={32}
+                    height={32}
+                    className="object-cover"
+                    priority
+                  />
                 </div>
                 <span className="font-bold text-xl tracking-tight hidden sm:block">
                   Uni<span className="text-primary">Clubs</span>
@@ -244,8 +252,14 @@ export function Footer() {
     <footer className="w-full border-t border-border bg-card py-6 mt-auto">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
         <div className="flex items-center gap-2 opacity-50">
-          <div className="w-5 h-5 rounded bg-primary flex items-center justify-center text-primary-foreground font-bold text-xs">
-            U
+          <div className="w-5 h-5 rounded overflow-hidden">
+            <Image
+              src="/logo.jpg"
+              alt="UniClubs"
+              width={20}
+              height={20}
+              className="object-cover"
+            />
           </div>
           <span className="font-semibold text-sm">UniClubs</span>
         </div>

@@ -1,0 +1,21 @@
+{
+  "name": "UniClubs",
+  "short_name": "UniClubs",
+  "description": "University Club Management Platform - Discover clubs, manage events, and build community",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050a14",
+  "theme_color": "#f59e0b",
+  "icons": [
+    {
+      "src": "/logo.jpg",
+      "sizes": "192x192",
+      "type": "image/jpeg"
+    },
+    {
+      "src": "/logo.jpg",
+      "sizes": "512x512",
+      "type": "image/jpeg"
+    }
+  ]
+}
