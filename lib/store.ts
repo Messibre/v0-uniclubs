@@ -63,7 +63,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           })
           return true
-        } else if (email === 'abebe.kebede@aau.edu.et' && password === 'Abebe123') {
+        } else if (email === 'abebe.kebede@aau.edu.et' && (password === 'Abebe123' || password === 'Student123')) {
           const demoUser = DEMO_USERS.student
           set({
             user: {
@@ -83,7 +83,7 @@ export const useAuthStore = create<AuthState>()(
             isLoading: false,
           })
           return true
-        } else if (email === 'senait.negash@aau.edu.et' && password === 'Senait123') {
+        } else if (email === 'senait.negash@aau.edu.et' && (password === 'Senait123' || password === 'Officer123')) {
           const demoUser = DEMO_USERS.officer
           set({
             user: {

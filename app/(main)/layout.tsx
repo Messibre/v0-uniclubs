@@ -1,4 +1,5 @@
 import { MainNav, Footer } from "@/components/layout/main-layout"
+import { AIChatbot } from "@/components/ai-chatbot"
 
 export default function MainLayout({
   children,
@@ -12,6 +13,7 @@ export default function MainLayout({
         {children}
       </main>
       <Footer />
+      <AIChatbot />
     </div>
   )
 }
