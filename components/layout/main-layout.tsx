@@ -3,9 +3,9 @@
 import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
-import { Search, Menu, User, LogOut, Settings, Sun, Moon, Shield, Building, Bell, X, Zap } from "lucide-react"
+import { Search, Menu, User, LogOut, Settings, Sun, Moon, Shield, Building, Bell, X } from "lucide-react"
 import { useTheme } from "next-themes"
-import { useAuthStore, useDemoStore } from "@/lib/store"
+import { useAuthStore } from "@/lib/store"
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -17,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { useState } from "react"
-import { DemoModeToggle, DemoBanner, RoleSwitcher } from "@/components/demo-mode"
 import { cn } from "@/lib/utils"
 
 export function MainNav() {
@@ -25,22 +24,16 @@ export function MainNav() {
   const router = useRouter()
   const { theme, setTheme } = useTheme()
   const { user, isAuthenticated, logout } = useAuthStore()
-  const { isDemoMode, setDemoMode } = useDemoStore()
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   const handleLogout = () => {
     logout()
-    setDemoMode(false)
     router.push("/")
   }
 
   return (
     <>
-      <DemoBanner />
-      <nav className={cn(
-        "sticky z-50 w-full bg-card/80 backdrop-blur-md border-b border-border",
-        isDemoMode ? "top-10" : "top-0"
-      )}>
+      <nav className="sticky top-0 z-50 w-full bg-card/80 backdrop-blur-md border-b border-border">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
             {/* Left: Logo & Search */}
@@ -73,9 +66,6 @@ export function MainNav() {
 
             {/* Right: Nav items */}
             <div className="flex items-center gap-3">
-              {/* Demo Mode Toggle */}
-              <DemoModeToggle />
-
               {/* Theme Toggle */}
               <Button
                 variant="ghost"
@@ -240,9 +230,6 @@ export function MainNav() {
           </div>
         )}
       </nav>
-      
-      {/* Role Switcher - only shows in demo mode */}
-      <RoleSwitcher />
     </>
   )
 }
