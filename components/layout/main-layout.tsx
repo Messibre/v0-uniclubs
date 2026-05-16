@@ -219,14 +219,89 @@ export function MainNav() {
                 className="w-full bg-muted border border-border rounded-full py-2 pl-10 pr-4 text-sm"
               />
             </div>
-            <div className="flex flex-col gap-2">
-              <Link href="/discover" className="px-4 py-2 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
-                Discover Clubs
-              </Link>
-              <Link href="/events" className="px-4 py-2 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
-                Events
-              </Link>
-            </div>
+            
+            {isAuthenticated ? (
+              <div className="flex flex-col gap-1">
+                {/* User Info */}
+                <div className="flex items-center gap-3 p-3 mb-2 bg-muted/50 rounded-lg">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user?.avatar} />
+                    <AvatarFallback>{user?.firstName?.[0]}{user?.lastName?.[0]}</AvatarFallback>
+                  </Avatar>
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-sm truncate">{user?.firstName} {user?.lastName}</p>
+                    <p className="text-xs text-muted-foreground capitalize">{user?.role}</p>
+                  </div>
+                </div>
+                
+                {/* Role-specific links */}
+                {user?.role === 'student' && (
+                  <Link href="/dashboard" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                    <User className="w-4 h-4" /> My Dashboard
+                  </Link>
+                )}
+                {user?.role === 'officer' && (
+                  <>
+                    <Link href="/officer/dashboard" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                      <Building className="w-4 h-4" /> Officer Dashboard
+                    </Link>
+                    <Link href="/officer/manage" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                      <Settings className="w-4 h-4" /> Manage Club
+                    </Link>
+                  </>
+                )}
+                {user?.role === 'admin' && (
+                  <Link href="/admin" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg flex items-center gap-2" onClick={() => setMobileMenuOpen(false)}>
+                    <Shield className="w-4 h-4" /> Admin Portal
+                  </Link>
+                )}
+                
+                <div className="border-t border-border my-2" />
+                
+                {/* Common links */}
+                <Link href="/discover" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Discover Clubs
+                </Link>
+                <Link href="/events" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Events
+                </Link>
+                <Link href="/notifications" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Notifications
+                </Link>
+                <Link href="/profile" className="px-4 py-2.5 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Profile
+                </Link>
+                
+                <div className="border-t border-border my-2" />
+                
+                {/* Logout */}
+                <button
+                  onClick={() => {
+                    handleLogout()
+                    setMobileMenuOpen(false)
+                  }}
+                  className="px-4 py-2.5 text-sm text-destructive hover:bg-destructive/10 rounded-lg flex items-center gap-2 w-full text-left"
+                >
+                  <LogOut className="w-4 h-4" /> Logout
+                </button>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-2">
+                <Link href="/discover" className="px-4 py-2 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Discover Clubs
+                </Link>
+                <Link href="/events" className="px-4 py-2 text-sm hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Events
+                </Link>
+                <div className="border-t border-border my-2" />
+                <Link href="/login" className="px-4 py-2 text-sm font-medium hover:bg-muted rounded-lg" onClick={() => setMobileMenuOpen(false)}>
+                  Sign In
+                </Link>
+                <Link href="/register" className="px-4 py-2 text-sm font-medium bg-primary text-primary-foreground rounded-lg text-center" onClick={() => setMobileMenuOpen(false)}>
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </nav>
