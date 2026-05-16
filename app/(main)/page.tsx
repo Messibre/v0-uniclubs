@@ -91,15 +91,15 @@ export default function HomePage() {
             </Link>
           </div>
 
-          {/* Quick Demo Buttons */}
-          <div className="rounded-2xl border border-amber-500/30 bg-amber-500/5 p-4 sm:p-6">
+          {/* Quick Access Buttons */}
+          <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-6">
             <div className="flex items-center gap-2 mb-4">
-              <Zap className="w-5 h-5 text-amber-500" />
-              <span className="font-bold text-foreground">Try the Demo</span>
-              <span className="text-xs text-muted-foreground ml-auto">No signup required</span>
+              <Zap className="w-5 h-5 text-primary" />
+              <span className="font-bold text-foreground">Quick Access</span>
+              <span className="text-xs text-muted-foreground ml-auto">Explore the platform</span>
             </div>
             <p className="text-sm text-muted-foreground mb-4">
-              Explore UniClubs as different user roles to see the full platform in action.
+              Experience UniClubs as different user roles to see the full platform capabilities.
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
               <Button

@@ -4,10 +4,9 @@ import { useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Shield, Building, Calendar, Users, BarChart3, Bell, Settings, ArrowLeft, Zap, X } from "lucide-react"
+import { Shield, Building, Calendar, Users, BarChart3, Bell, Settings, ArrowLeft } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuthStore, useDemoStore } from "@/lib/store"
-import { RoleSwitcher } from "@/components/demo-mode"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 const sidebarLinks = [
@@ -88,31 +87,6 @@ export function AdminSidebar() {
   )
 }
 
-function AdminDemoBanner() {
-  const { isDemoMode, setDemoMode } = useDemoStore()
-
-  if (!isDemoMode) return null
-
-  return (
-    <div className="bg-amber-500 text-amber-950 px-4 py-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium">
-          <Zap className="w-4 h-4" />
-          <span>DEMO MODE</span>
-          <span className="hidden sm:inline">- Viewing Admin Portal with simulated data</span>
-        </div>
-        <button
-          onClick={() => setDemoMode(false)}
-          className="p-1 hover:bg-amber-600/30 rounded transition-colors"
-          aria-label="Exit demo mode"
-        >
-          <X className="w-4 h-4" />
-        </button>
-      </div>
-    </div>
-  )
-}
-
 export default function AdminLayout({
   children,
 }: {
@@ -138,14 +112,12 @@ export default function AdminLayout({
 
   return (
     <div className="flex flex-col min-h-screen bg-background">
-      <AdminDemoBanner />
       <div className="flex flex-1">
         <AdminSidebar />
         <main className="flex-1 p-8 overflow-auto">
           {children}
         </main>
       </div>
-      <RoleSwitcher />
     </div>
   )
 }

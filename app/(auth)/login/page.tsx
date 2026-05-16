@@ -183,18 +183,18 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          {/* Quick Demo Section */}
+          {/* Quick Access Section */}
           <div className="mt-6 pt-6 border-t border-border space-y-4">
             <div className="flex items-center justify-center gap-2">
               <Zap className="w-4 h-4 text-amber-500" />
-              <p className="text-sm font-medium text-foreground">Try Demo Mode</p>
+              <p className="text-sm font-medium text-foreground">Quick Access</p>
             </div>
             
             <p className="text-xs text-muted-foreground text-center">
-              Explore UniClubs as different user roles without signing up
+              Explore UniClubs as different user roles
             </p>
             
-            {/* Instant Demo Buttons */}
+            {/* Instant Access Buttons */}
             <div className="grid grid-cols-3 gap-2">
               <button
                 type="button"
@@ -207,7 +207,6 @@ export default function LoginPage() {
               >
                 <User className="w-5 h-5" />
                 <span>Student</span>
-                <span className="text-[10px] opacity-70">Abebe K.</span>
               </button>
               <button
                 type="button"
@@ -220,7 +219,6 @@ export default function LoginPage() {
               >
                 <Building className="w-5 h-5" />
                 <span>Officer</span>
-                <span className="text-[10px] opacity-70">Senait N.</span>
               </button>
               <button
                 type="button"
@@ -233,13 +231,8 @@ export default function LoginPage() {
               >
                 <Shield className="w-5 h-5" />
                 <span>Admin</span>
-                <span className="text-[10px] opacity-70">Yonas T.</span>
               </button>
             </div>
-            
-            <p className="text-[10px] text-muted-foreground text-center">
-              Click any role above to instantly explore that dashboard
-            </p>
           </div>
         </CardContent>
       </Card>

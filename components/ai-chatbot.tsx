@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
-import { useDemoStore } from "@/lib/store"
+import { useDemoStore, useAuthStore } from "@/lib/store"
 import { MOCK_AI_RECOMMENDATIONS, MOCK_CLUBS, MOCK_EVENTS, DEMO_USERS } from "@/lib/mock-data"
 
 interface Message {
@@ -96,11 +96,16 @@ function generateAIResponse(message: string, role: string): string {
 }
 
 export function AIChatbot() {
-  const { currentRole, isDemoMode } = useDemoStore()
+  const { currentRole } = useDemoStore()
+  const { isAuthenticated, user } = useAuthStore()
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
+  
+  // Determine the role - use demo role or authenticated user's role
+  const activeRole = currentRole || (user?.role as 'student' | 'officer' | 'admin') || 'student'
+  
   const [messages, setMessages] = useState<Message[]>(
-    INITIAL_MESSAGES[currentRole] || INITIAL_MESSAGES.student
+    INITIAL_MESSAGES[activeRole] || INITIAL_MESSAGES.student
   )
   const [input, setInput] = useState("")
   const [isTyping, setIsTyping] = useState(false)
@@ -108,8 +113,8 @@ export function AIChatbot() {
 
   // Update initial messages when role changes
   useEffect(() => {
-    setMessages(INITIAL_MESSAGES[currentRole] || INITIAL_MESSAGES.student)
-  }, [currentRole])
+    setMessages(INITIAL_MESSAGES[activeRole] || INITIAL_MESSAGES.student)
+  }, [activeRole])
 
   // Scroll to bottom when new messages appear
   useEffect(() => {
@@ -136,7 +141,7 @@ export function AIChatbot() {
     const aiResponse: Message = {
       id: (Date.now() + 1).toString(),
       role: "assistant",
-      content: generateAIResponse(input, currentRole),
+      content: generateAIResponse(input, activeRole),
       timestamp: new Date(),
     }
 
@@ -151,7 +156,8 @@ export function AIChatbot() {
     }
   }
 
-  if (!isDemoMode) return null
+  // Only show chatbot when user is authenticated (via demo or regular login)
+  if (!isAuthenticated && !currentRole) return null
 
   return (
     <>
@@ -224,7 +230,7 @@ export function AIChatbot() {
                         {message.role === "assistant" ? (
                           <Sparkles className="w-4 h-4" />
                         ) : (
-                          DEMO_USERS[currentRole]?.firstName[0] || "U"
+                          user?.firstName?.[0] || DEMO_USERS[activeRole]?.firstName[0] || "U"
                         )}
                       </AvatarFallback>
                     </Avatar>
@@ -263,7 +269,7 @@ export function AIChatbot() {
               {/* Quick Actions */}
               <div className="px-4 py-2 border-t border-border bg-muted/20">
                 <div className="flex gap-2 overflow-x-auto pb-2">
-                  {currentRole === "student" && (
+                  {activeRole === "student" && (
                     <>
                       <button
                         onClick={() => setInput("Recommend clubs for me")}
@@ -279,7 +285,7 @@ export function AIChatbot() {
                       </button>
                     </>
                   )}
-                  {currentRole === "officer" && (
+                  {activeRole === "officer" && (
                     <>
                       <button
                         onClick={() => setInput("Show me club analytics")}
@@ -295,7 +301,7 @@ export function AIChatbot() {
                       </button>
                     </>
                   )}
-                  {currentRole === "admin" && (
+                  {activeRole === "admin" && (
                     <>
                       <button
                         onClick={() => setInput("Show platform analytics")}
