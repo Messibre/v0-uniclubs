@@ -14,9 +14,48 @@ const geistMono = Geist_Mono({
 })
 
 export const metadata: Metadata = {
-  title: 'UniClubs - University Club Management Platform',
-  description: 'Discover clubs, manage events, and build community in one polished campus experience.',
-  keywords: ['university', 'clubs', 'events', 'students', 'campus', 'community'],
+  title: {
+    default: 'UniClubs - University Club Management Platform',
+    template: '%s | UniClubs',
+  },
+  description: 'Discover clubs, manage events, and build community in one polished campus experience. Connect with fellow students, join exciting clubs, and never miss an event.',
+  keywords: ['university', 'clubs', 'events', 'students', 'campus', 'community', 'AAU', 'Addis Ababa University', 'student organizations'],
+  authors: [{ name: 'UniClubs Team' }],
+  creator: 'UniClubs',
+  publisher: 'UniClubs',
+  metadataBase: new URL('https://uniclubs.vercel.app'),
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://uniclubs.vercel.app',
+    siteName: 'UniClubs',
+    title: 'UniClubs - University Club Management Platform',
+    description: 'Discover clubs, manage events, and build community in one polished campus experience.',
+    images: [
+      {
+        url: '/og-image.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'UniClubs - Connect, Collaborate, Grow',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'UniClubs - University Club Management Platform',
+    description: 'Discover clubs, manage events, and build community in one polished campus experience.',
+    images: ['/og-image.jpg'],
+  },
+  icons: {
+    icon: '/logo.jpg',
+    shortcut: '/logo.jpg',
+    apple: '/logo.jpg',
+  },
+  manifest: '/manifest.json',
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const viewport: Viewport = {
